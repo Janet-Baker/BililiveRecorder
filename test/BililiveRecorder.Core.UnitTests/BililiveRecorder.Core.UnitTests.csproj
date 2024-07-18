@@ -4,6 +4,7 @@
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">net4.8;net8.0</TargetFrameworks>
     <TargetFramework Condition=" '$(OS)' != 'Windows_NT' ">net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>

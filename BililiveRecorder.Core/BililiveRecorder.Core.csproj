@@ -9,6 +9,7 @@
       https://api.nuget.org/v3/index.json;
       https://www.myget.org/F/jint/api/v3/index.json;
     </RestoreAdditionalProjectSources>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   
   <ItemGroup>

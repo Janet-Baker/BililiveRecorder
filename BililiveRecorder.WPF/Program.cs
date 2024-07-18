@@ -15,14 +15,11 @@ using BililiveRecorder.Flv.Pipeline;
 using BililiveRecorder.ToolBox;
 using Esprima;
 using Jint.Runtime;
-using Sentry;
-using Sentry.Extensibility;
 using Serilog;
 using Serilog.Core;
 using Serilog.Exceptions;
 using Serilog.Formatting.Compact;
 using Serilog.Formatting.Display;
-using Squirrel;
 
 #nullable enable
 namespace BililiveRecorder.WPF
@@ -34,8 +31,6 @@ namespace BililiveRecorder.WPF
         internal static readonly LoggingLevelSwitch levelSwitchGlobal;
         internal static readonly LoggingLevelSwitch levelSwitchConsole;
         internal static readonly Logger logger;
-        internal static readonly Update update;
-        internal static Task? updateTask;
 
 #if DEBUG
         internal static readonly bool DebugMode = System.Diagnostics.Debugger.IsAttached;
@@ -54,34 +49,7 @@ namespace BililiveRecorder.WPF
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             Log.Logger = logger;
-            SentrySdk.ConfigureScope(s =>
-            {
-                s.SetTag("fullsemver", GitVersionInformation.FullSemVer);
-            });
-            _ = SentrySdk.ConfigureScopeAsync(async s =>
-            {
-                var path = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location), "..", "packages", ".betaId"));
-                for (var i = 0; i < 10; i++)
-                {
-                    if (i != 0)
-                        await Task.Delay(TimeSpan.FromSeconds(5));
-                    try
-                    {
-                        if (!File.Exists(path))
-                            continue;
-                        var content = File.ReadAllText(path);
-                        if (Guid.TryParse(content, out var id))
-                        {
-                            s.User.Id = id.ToString();
-                            return;
-                        }
-                    }
-                    catch (Exception)
-                    { }
-                }
-            });
             ServicePointManager.Expect100Continue = false;
-            update = new Update(logger);
         }
 
         [STAThread]
@@ -111,87 +79,24 @@ namespace BililiveRecorder.WPF
                 new Option<bool>("--ask-path", "Ask path in GUI even when \"don't ask again\" is selected before."),
                 new Option<bool>("--hide", "Minimize to tray")
             };
-            run.Handler = CommandHandler.Create((string? path, bool askPath, bool hide) => Commands.RunWpfHandler(path: path, squirrelFirstrun: false, askPath: askPath, hide: hide));
-
+            run.Handler = CommandHandler.Create((string? path, bool askPath, bool hide) => Commands.RunWpfHandler(path: path, askPath: askPath, hide: hide));
             var root = new RootCommand("")
             {
-                new Option<bool>("--squirrel-firstrun")
-                {
-                    IsHidden = true
-                },
-                new Option<SemanticVersion?>("--squirrel-install", getDefaultValue: () => null)
-                {
-                    IsHidden = true,
-                    IsRequired = false,
-                },
-                new Option<SemanticVersion?>("--squirrel-updated", getDefaultValue: () => null)
-                {
-                    IsHidden = true,
-                    IsRequired = false,
-                },
-                new Option<SemanticVersion?>("--squirrel-obsolete", getDefaultValue: () => null)
-                {
-                    IsHidden = true,
-                    IsRequired = false,
-                },
-                new Option<SemanticVersion?>("--squirrel-uninstall", getDefaultValue: () => null)
-                {
-                    IsHidden = true,
-                    IsRequired = false,
-                },
-
                 run,
                 new ToolCommand(),
             };
-            root.Handler = CommandHandler.Create<bool, SemanticVersion?, SemanticVersion?, SemanticVersion?, SemanticVersion?>(Commands.RunRootCommandHandler);
+            root.Handler = CommandHandler.Create(Commands.RunRootCommandHandler);
             return root;
         }
 
         private static class Commands
         {
-            private static IAppTools GetSquirrelAppTools()
-            {
-                var m = new UpdateManager(updateSource: null, applicationIdOverride: null, localAppDataDirectoryOverride: null);
-                m.Dispose();
-                return m;
+            internal static int RunRootCommandHandler() {
+                return RunWpfHandler(path: null, askPath: false, hide: false);
             }
-
-            internal static int RunRootCommandHandler(bool squirrelFirstrun, SemanticVersion? squirrelInstall, SemanticVersion? squirrelUpdated, SemanticVersion? squirrelObsolete, SemanticVersion? squirrelUninstall)
-            {
-                var tools = GetSquirrelAppTools();
-                if (squirrelInstall is not null)
-                {
-                    tools.CreateShortcutForThisExe();
-                    Environment.Exit(0);
-                    return 0;
-                }
-                else if (squirrelUpdated is not null)
-                {
-                    Environment.Exit(0);
-                    return 0;
-                }
-                else if (squirrelObsolete is not null)
-                {
-                    Environment.Exit(0);
-                    return 0;
-                }
-                else if (squirrelUninstall is not null)
-                {
-                    tools.RemoveShortcutForThisExe();
-                    Environment.Exit(0);
-                    return 0;
-                }
-                else
-                {
-                    tools.SetProcessAppUserModelId();
-                    return RunWpfHandler(path: null, squirrelFirstrun: squirrelFirstrun, askPath: false, hide: false);
-                }
-            }
-
-            internal static int RunWpfHandler(string? path, bool squirrelFirstrun, bool askPath, bool hide)
+            internal static int RunWpfHandler(string? path, bool askPath, bool hide)
             {
                 Pages.RootPage.CommandArgumentRecorderPath = path;
-                Pages.RootPage.CommandArgumentFirstRun = squirrelFirstrun;
                 Pages.RootPage.CommandArgumentAskPath = askPath;
                 Pages.RootPage.CommandArgumentHide = hide;
                 return CODE__WPF;
@@ -209,26 +114,12 @@ namespace BililiveRecorder.WPF
                     app.InitializeComponent();
                     app.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
-                    updateTask = Task.Run(async () =>
-                    {
-                        while (!token.IsCancellationRequested)
-                        {
-                            await update.UpdateAsync().ConfigureAwait(false);
-                            await Task.Delay(TimeSpan.FromDays(1), token).ConfigureAwait(false);
-                        }
-                    });
-
                     return app.Run();
                 }
                 finally
                 {
                     cancel.Cancel();
-
                     StreamStartedNotification.Cleanup();
-
-#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
-                    update.WaitForUpdatesOnShutdownAsync().GetAwaiter().GetResult();
-#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
                 }
             }
         }
@@ -307,30 +198,6 @@ namespace BililiveRecorder.WPF
                 .WriteTo.Async(l => l.Sink<WpfLogEventSink>(Serilog.Events.LogEventLevel.Information))
 #endif
                 .WriteTo.Async(l => l.File(new CompactJsonFormatter(), logFilePath, shared: true, rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true))
-                .WriteTo.Sentry(o =>
-                {
-                    o.Dsn = "https://fed94ca0022e8697c171d0d35f15c257@o210546.ingest.sentry.io/5556540";
-                    o.SendDefaultPii = true;
-                    o.IsGlobalModeEnabled = true;
-                    o.DisableAppDomainUnhandledExceptionCapture();
-                    o.DisableUnobservedTaskExceptionCapture();
-                    o.AddExceptionFilterForType<HttpRequestException>();
-                    o.AddExceptionFilterForType<OutOfMemoryException>();
-                    o.AddExceptionFilterForType<JintException>();
-                    o.AddExceptionFilterForType<ParserException>();
-                    o.AddEventProcessor(new SentryEventProcessor());
-
-                    o.TextFormatter = new MessageTemplateTextFormatter("[{RoomId}] {Message}{NewLine}{Exception}{@ExceptionDetail:j}");
-
-                    o.MinimumBreadcrumbLevel = Serilog.Events.LogEventLevel.Debug;
-                    o.MinimumEventLevel = Serilog.Events.LogEventLevel.Error;
-
-#if DEBUG
-                    o.Environment = "debug-build";
-#else
-                    o.Environment = "release-build";
-#endif
-                })
                 .CreateLogger();
 
         }
@@ -353,11 +220,5 @@ namespace BililiveRecorder.WPF
         private static void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) =>
             logger.Fatal(e.Exception, "Unhandled exception from Application.DispatcherUnhandledException");
 
-        private class SentryEventProcessor : ISentryEventProcessor
-        {
-            private const string JintConsole = "BililiveRecorder.Core.Scripting.Runtime.JintConsole";
-            private static readonly string UserScriptRunner = typeof(Core.Scripting.UserScriptRunner).FullName;
-            public SentryEvent? Process(SentryEvent e) => (e?.Logger == JintConsole || e?.Logger == UserScriptRunner) ? null : e;
-        }
     }
 }
