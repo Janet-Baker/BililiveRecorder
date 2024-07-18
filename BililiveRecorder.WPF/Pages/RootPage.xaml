@@ -83,18 +83,7 @@
                     </Menu>
                 </StackPanel>
             </ui:NavigationView.PaneCustomContent>
-            <ui:NavigationView.PaneFooter>
-                <Grid Width="40" Height="40" x:Name="DebugBuildIcon" Visibility="Collapsed" HorizontalAlignment="Left">
-                    <ui:PathIcon Width="24" Height="24" ToolTip="Debug Build 测试版"
-                                 Style="{StaticResource PathIconDataBugOutline}"/>
-                </Grid>
-            </ui:NavigationView.PaneFooter>
             <ui:NavigationView.MenuItems>
-                <ui:NavigationViewItem Content="{l:Loc RootPage_NavigationViewItem_AnnouncementPage}" Tag="AnnouncementPage" IsSelected="True">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:PathIcon Style="{StaticResource PathIconDataBullhornOutline}"/>
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
                 <ui:NavigationViewItem Content="{l:Loc RootPage_NavigationViewItem_RoomListPage}" Tag="RoomListPage" IsEnabled="False" x:Name="RoomListPageNavigationViewItem">
                     <ui:NavigationViewItem.Icon>
                         <ui:PathIcon Style="{StaticResource PathIconDataHomeOutline}"/>

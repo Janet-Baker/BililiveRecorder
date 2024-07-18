@@ -13,6 +13,7 @@
     <PublishDir Condition=" '$(RuntimeIdentifier)' != '' ">publish\$(RuntimeIdentifier)\$(Configuration)</PublishDir>
     <SelfContained Condition=" '$(RuntimeIdentifier)' == '' ">false</SelfContained>
     <SelfContained Condition=" '$(SelfContained)' == '' ">true</SelfContained>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   
   <ItemGroup>
