@@ -8,6 +8,7 @@
     <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
     <SelfContained Condition=" '$(RuntimeIdentifier)' == '' ">false</SelfContained>
     <SelfContained Condition=" '$(SelfContained)' == '' ">true</SelfContained>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
   
   <ItemGroup>
