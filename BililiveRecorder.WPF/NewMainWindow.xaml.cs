@@ -24,7 +24,6 @@ namespace BililiveRecorder.WPF
         {
             this.SoftwareVersion = GitVersionInformation.FullSemVer;
 
-            Pages.AnnouncementPage.CultureInfo = CultureInfo.CurrentUICulture;
             LocalizeDictionary.Instance.Culture = CultureInfo.CurrentUICulture;
 #if DEBUG
             LocalizeDictionary.Instance.OutputMissingKeys = true;

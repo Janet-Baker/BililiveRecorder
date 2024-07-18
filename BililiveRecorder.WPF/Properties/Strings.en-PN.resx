@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -177,12 +177,6 @@
     <value>喵喵喵喵喵喵喵喵</value>
   </data>
   <data name="AddRoomFailedDialog_Title" xml:space="preserve">
-    <value>喵喵喵喵喵喵</value>
-  </data>
-  <data name="AnnouncementPage_FetchFailed" xml:space="preserve">
-    <value>喵喵喵喵喵喵</value>
-  </data>
-  <data name="AnnouncementPage_RefreshButton" xml:space="preserve">
     <value>喵喵喵喵喵喵</value>
   </data>
   <data name="CloseWindowConfirmDialog_Title" xml:space="preserve">
@@ -389,9 +383,6 @@
   </data>
   <data name="RootPage_NavigationViewItem_AdvancedSettingsPage" xml:space="preserve">
     <value>喵喵喵喵</value>
-  </data>
-  <data name="RootPage_NavigationViewItem_AnnouncementPage" xml:space="preserve">
-    <value>喵喵</value>
   </data>
   <data name="RootPage_NavigationViewItem_LogPage" xml:space="preserve">
     <value>喵喵</value>

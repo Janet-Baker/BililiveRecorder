@@ -132,8 +132,6 @@
                     <Label Content="Nullable"/>
                     <Label Content="Polly"/>
                     <Label Content="Polly.Caching.Memory"/>
-                    <Label Content="Sentry"/>
-                    <Label Content="Sentry.Serilog"/>
                     <Label Content="Serilog"/>
                     <Label Content="Serilog.Enrichers.Process"/>
                     <Label Content="Serilog.Enrichers.Thread"/>

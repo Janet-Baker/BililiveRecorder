@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -180,12 +180,6 @@
   </data>
   <data name="AddRoomFailedDialog_Title" xml:space="preserve">
     <value>ルームを追加できませんでした</value>
-  </data>
-  <data name="AnnouncementPage_FetchFailed" xml:space="preserve">
-    <value>お知らせ情報の取得に失敗しました</value>
-  </data>
-  <data name="AnnouncementPage_RefreshButton" xml:space="preserve">
-    <value>お知らせ情報更新</value>
   </data>
   <data name="CloseWindowConfirmDialog_Title" xml:space="preserve">
     <value>リコーダーを終了してもよろしいですか？</value>
@@ -391,9 +385,6 @@
   </data>
   <data name="RootPage_NavigationViewItem_AdvancedSettingsPage" xml:space="preserve">
     <value>詳細設定</value>
-  </data>
-  <data name="RootPage_NavigationViewItem_AnnouncementPage" xml:space="preserve">
-    <value>お知らせ</value>
   </data>
   <data name="RootPage_NavigationViewItem_LogPage" xml:space="preserve">
     <value>ログ</value>

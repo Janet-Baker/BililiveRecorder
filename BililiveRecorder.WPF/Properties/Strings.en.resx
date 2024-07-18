@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -180,12 +180,6 @@ This software is open source and licensed under the GNU General Public License V
   </data>
   <data name="AddRoomFailedDialog_Title" xml:space="preserve">
     <value>Failed to add channel</value>
-  </data>
-  <data name="AnnouncementPage_FetchFailed" xml:space="preserve">
-    <value>Fetch Announcements Failed</value>
-  </data>
-  <data name="AnnouncementPage_RefreshButton" xml:space="preserve">
-    <value>Refresh Announcements</value>
   </data>
   <data name="CloseWindowConfirmDialog_Title" xml:space="preserve">
     <value>Are you sure you want to quit?</value>
@@ -391,9 +385,6 @@ It should be close to 100% and the color will be green</value>
   </data>
   <data name="RootPage_NavigationViewItem_AdvancedSettingsPage" xml:space="preserve">
     <value>Advanced Settings</value>
-  </data>
-  <data name="RootPage_NavigationViewItem_AnnouncementPage" xml:space="preserve">
-    <value>Announcements</value>
   </data>
   <data name="RootPage_NavigationViewItem_LogPage" xml:space="preserve">
     <value>Logs</value>
